@@ -1,6 +1,6 @@
 # Sales
 
-> Sales API
+> Sales API with NodeJS and Postgres
 
 ## Quick Start
 
