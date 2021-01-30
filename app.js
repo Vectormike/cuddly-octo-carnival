@@ -1,22 +1,38 @@
 const express = require('express')
 const app = express()
+const { ApiError } = require('./utils')
 
 // Database
-const db = require('./config/database')
+const { sequelize } = require('./config/database')
+
+// console.log(db)
 
 // Test DB
-db.authenticate()
-  .then(() => console.log('Database connected...'))
-  .catch((err) => console.log('Error: ' + err))
+let connectDB = async () => {
+  try {
+    // console.log(sequelize.authenticate())
+    await sequelize.authenticate()
+    console.log('Database connected...')
+  } catch (error) {
+    console.error('Error connecting to the Database', error)
+  }
+}
+
+connectDB()
 
 // Body Parser
-app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
 
-// Index route
-app.get('/', (req, res) => res.send('test'))
+// Test route
+app.get('/test', (req, res) => res.send('test'))
 
-// Gig routes
+// Sales routes
 app.use('/sales', require('./routes/sales'))
+
+// send back a 404 error for any unknown api request
+app.use((req, res, next) => {
+  next(new ApiError(httpStatus.NOT_FOUND, 'API request not found'))
+})
 
 const PORT = process.env.PORT || 5000
 
