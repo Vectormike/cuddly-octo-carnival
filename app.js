@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const { ApiError } = require('./utils')
-
+const httpStatus = require('http-status')
 // Database
 const { sequelize } = require('./config/database')
 
