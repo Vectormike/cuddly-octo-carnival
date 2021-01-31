@@ -1,15 +1,15 @@
 const Sequelize = require('sequelize')
-const db = require('../config/database')
+const { sequelize } = require('../config/database')
 
-const Sales = db.define('sales', {
+const Sales = sequelize.define('sales', {
   userName: {
     type: Sequelize.STRING,
   },
   amount: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.STRING,
   },
   date: {
-    type: Sequelize.DATE,
+    type: Sequelize.STRING,
   },
 })
 
