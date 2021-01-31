@@ -11,8 +11,8 @@ const Sequelize = require('sequelize')
 // })
 const sequelize = new Sequelize('segwitz', 'root', 'root', {
   host: '127.0.0.1',
-  dialect: 'mysql',
-  port: 8889,
+  dialect: 'postgres',
+  port: 5432,
   freezeTableName: true,
   operatorsAliases: false,
 })
