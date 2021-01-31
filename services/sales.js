@@ -52,25 +52,43 @@ const getSalesByTime = async (params) => {
 
   // Get start and of end of day currently.
   const currentDate = moment().format('LLL')
-  console.log(currentDate)
-  const startedDate = moment(currentDate).startOf('day').format('LLL')
-  console.log(startedDate, 'Started Date')
   const endDate = moment().endOf('day').format('LLL')
-  console.log(endDate, 'End date')
+  const endWeek = moment().endOf('week').format('LLL')
+  const endMonth = moment().endOf('month').format('LLL')
+
   try {
     if (params.time === 'daily') {
-      console.log('Hey!')
-      const dailySales = await Sales.findAll({ where: { date: { $between: [currentDate, endDate] } }, logging: console.log, raw: true, order: [['date', 'ASC']] })
-      console.log(dailySales)
-      return dailySales
+      const dailySales = await Sales.findAll({
+        where: { date: { [Op.between]: [endDate, currentDate] } },
+        logging: console.log,
+        raw: true,
+        order: [['date', 'ASC']],
+      })
+
+      const sumOfSales = dailySales.map((sale) => parseInt(sale.amount)).reduce((acc, amount) => acc + amount, 0)
+
+      return sumOfSales
     } else if (params.time === 'weekly') {
-      console.log('Hi!')
-      //  const weeklySales = await Sales.findAll({ where: { date: { [Op.between]: [startedDate, endDate] } } })
-      //  return weeklySales
+      const weeklySales = await Sales.findAll({
+        where: { date: { [Op.between]: [endWeek, currentDate] } },
+        logging: console.log,
+        raw: true,
+        order: [['date', 'ASC']],
+      })
+
+      const sumOfSales = weeklySales.map((sale) => parseInt(sale.amount)).reduce((acc, amount) => acc + amount, 0)
+
+      return sumOfSales
     } else if (params.time === 'monthly') {
-      console.log('Monthly')
-      //  const monthlySales = await Sales.findAll({ where: { date: { [Op.between]: [startedDate, endDate] } } })
-      //  return monthlySales
+      const monthly = await Sales.findAll({
+        where: { date: { [Op.between]: [endMonth, currentDate] } },
+        logging: console.log,
+        raw: true,
+        order: [['date', 'ASC']],
+      })
+
+      const sumOfSales = monthly.map((sale) => parseInt(sale.amount)).reduce((acc, amount) => acc + amount, 0)
+      return sumOfSales
     }
   } catch (error) {
     console.error(`Add Sales error ==>`, error)
