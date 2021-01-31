@@ -16,10 +16,7 @@ const getAllSales = async (req, res) => {
     return sales
   } catch (error) {
     console.error(`Fetch All Sales error ==>`, error)
-    return res.status(500).json({
-      status: 'Internal Server Error',
-      message: 'An unexpected error occurred.',
-    })
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'An unexpected error occurred.')
   }
 }
 
@@ -39,10 +36,7 @@ const addSales = async (salesBody) => {
     return sales
   } catch (error) {
     console.error(`Add Sales error ==>`, error)
-    return res.status(500).json({
-      status: 'Internal Server Error',
-      message: 'An unexpected error occurred.',
-    })
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'An unexpected error occurred.')
   }
 }
 
@@ -66,7 +60,7 @@ const getSalesByTime = async (params) => {
   try {
     if (params.time === 'daily') {
       console.log('Hey!')
-      const dailySales = await Sales.findAll({ where: { date: { [Op.between]: [currentDate, endDate] } } })
+      const dailySales = await Sales.findAll({ where: { date: { $between: [currentDate, endDate] } }, logging: console.log, raw: true, order: [['date', 'ASC']] })
       console.log(dailySales)
       return dailySales
     } else if (params.time === 'weekly') {
@@ -80,10 +74,7 @@ const getSalesByTime = async (params) => {
     }
   } catch (error) {
     console.error(`Add Sales error ==>`, error)
-    return res.status(500).json({
-      status: 'Internal Server Error',
-      message: 'An unexpected error occurred.',
-    })
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'An unexpected error occurred.')
   }
 }
 
